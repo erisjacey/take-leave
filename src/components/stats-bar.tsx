@@ -32,33 +32,37 @@ interface StatsBarProps {
 }
 
 const StatsBar = ({ stats }: StatsBarProps) => {
+  const {
+    currentBalance,
+    plannedLeave,
+    yearEndForecast,
+    nextAccrualDate,
+    nextAccrualDays,
+  } = stats
+
   const nextAccrualSub =
-    stats.nextAccrualDate !== null
-      ? `on ${stats.nextAccrualDate}`
-      : 'none remaining'
+    nextAccrualDate !== null ? `on ${nextAccrualDate}` : 'none remaining'
 
   return (
     <div className="grid grid-cols-2 gap-3 p-4 lg:grid-cols-4">
       <StatCard
         label="Current Balance"
-        value={`${stats.currentBalance.toFixed(1)} days`}
-        isAlert={stats.currentBalance < 3}
+        value={`${currentBalance.toFixed(1)} days`}
+        isAlert={currentBalance < 3}
       />
       <StatCard
         label="Planned Leave"
-        value={`${stats.plannedLeave.toFixed(1)} days`}
+        value={`${plannedLeave.toFixed(1)} days`}
       />
       <StatCard
         label="Year-end Forecast"
-        value={`${stats.yearEndForecast.toFixed(1)} days`}
-        isAlert={stats.yearEndForecast < 0}
+        value={`${yearEndForecast.toFixed(1)} days`}
+        isAlert={yearEndForecast < 0}
       />
       <StatCard
         label="Next Accrual"
         value={
-          stats.nextAccrualDays > 0
-            ? `+${stats.nextAccrualDays.toFixed(2)} days`
-            : '—'
+          nextAccrualDays > 0 ? `+${nextAccrualDays.toFixed(2)} days` : '—'
         }
         sub={nextAccrualSub}
       />

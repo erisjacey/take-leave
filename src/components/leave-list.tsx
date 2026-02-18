@@ -48,8 +48,9 @@ interface EntryRowProps {
 }
 
 const EntryRow = ({ entry, onEdit }: EntryRowProps) => {
-  const tagConfig = TAG_CONFIG[entry.tag]
-  const Icon = TAG_ICONS[entry.tag]
+  const { tag, title, startDate, endDate, days } = entry
+  const tagConfig = TAG_CONFIG[tag]
+  const Icon = TAG_ICONS[tag]
 
   return (
     <div className="flex items-center gap-3 rounded-lg border border-zinc-100 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-900">
@@ -62,19 +63,15 @@ const EntryRow = ({ entry, onEdit }: EntryRowProps) => {
 
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-50">
-          {entry.title}
+          {title}
         </p>
         <p className="text-xs text-zinc-500 dark:text-zinc-400">
-          {entry.startDate === entry.endDate
-            ? entry.startDate
-            : `${entry.startDate} – ${entry.endDate}`}
+          {startDate === endDate ? startDate : `${startDate} – ${endDate}`}
         </p>
       </div>
 
       <span className="font-mono text-sm text-zinc-600 tabular-nums dark:text-zinc-400">
-        {entry.days % 1 === 0
-          ? `${entry.days.toString()}d`
-          : `${entry.days.toString()}d`}
+        {days.toString()}d
       </span>
 
       <button
@@ -82,7 +79,7 @@ const EntryRow = ({ entry, onEdit }: EntryRowProps) => {
         onClick={() => {
           onEdit(entry)
         }}
-        aria-label={`Edit ${entry.title}`}
+        aria-label={`Edit ${title}`}
         className="flex h-7 w-7 items-center justify-center rounded text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
       >
         <Pencil size={13} />
