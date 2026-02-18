@@ -15,6 +15,9 @@ export default [
       react: reactPlugin,
       '@next/next': nextPlugin,
     },
+    settings: {
+      react: { version: 'detect' },
+    },
     rules: {
       // --- Hooks ---
       'react-hooks/rules-of-hooks': 'error',
@@ -45,5 +48,13 @@ export default [
       },
     },
   },
+  // eslint-config-prettier must come before any rules it would otherwise
+  // disable — curly is re-added after because 'all' is safe with Prettier
+  // (Prettier formats braces, never removes required ones)
   eslintConfigPrettier,
+  {
+    rules: {
+      curly: ['error', 'all'],
+    },
+  },
 ]
