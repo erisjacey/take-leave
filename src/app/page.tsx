@@ -1,6 +1,6 @@
 'use client'
 
-import { Header, StatsBar } from '@/components'
+import { Header, LeaveList, StatsBar } from '@/components'
 import type { PtoStats } from '@/lib'
 
 const MOCK_STATS: PtoStats = {
@@ -14,8 +14,9 @@ const MOCK_STATS: PtoStats = {
 const Home = () => (
   <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
     <Header onOpenConfig={() => {}} />
-    <main className="mx-auto max-w-4xl">
+    <main className="mx-auto max-w-4xl space-y-4 p-4">
       <StatsBar stats={MOCK_STATS} />
+      <LeaveList entries={[]} onAdd={() => {}} onEdit={() => {}} />
     </main>
   </div>
 )
