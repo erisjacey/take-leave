@@ -1,32 +1,32 @@
 'use client'
 
 import { Header, LeaveList, LeaveModal, StatsBar } from '@/components'
-import type { LeaveEntry, PtoStats } from '@/lib'
+import { usePtoData } from '@/hooks'
+import type { LeaveEntry } from '@/lib'
 import { useState } from 'react'
 
-const MOCK_STATS: PtoStats = {
-  currentBalance: 3.5,
-  plannedLeave: 5,
-  yearEndForecast: 12.25,
-  nextAccrualDate: '2026-03-01',
-  nextAccrualDays: 1.75,
-}
-
-const MOCK_ENTRIES: LeaveEntry[] = [
-  {
-    id: '1',
-    title: 'Bali trip',
-    tag: 'travel',
-    leaveType: 'annual',
-    startDate: '2026-04-01',
-    endDate: '2026-04-05',
-    days: 5,
-  },
-]
-
 const Home = () => {
+  const pto = usePtoData()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingEntry, setEditingEntry] = useState<LeaveEntry | undefined>()
+
+  if (pto.isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-zinc-950">
+        <p className="text-sm text-zinc-400">Loading…</p>
+      </div>
+    )
+  }
+
+  if (!pto.hasOnboarded) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-zinc-950">
+        <p className="text-sm text-zinc-400">
+          Setup coming soon — onboarding in step 15.
+        </p>
+      </div>
+    )
+  }
 
   const handleAdd = () => {
     setEditingEntry(undefined)
@@ -43,13 +43,29 @@ const Home = () => {
     setEditingEntry(undefined)
   }
 
+  const handleSave = (data: Omit<LeaveEntry, 'id'>) => {
+    if (editingEntry !== undefined) {
+      pto.updateEntry({ ...data, id: editingEntry.id })
+    } else {
+      pto.addEntry(data)
+    }
+    handleClose()
+  }
+
+  const handleDelete = () => {
+    if (editingEntry !== undefined) {
+      pto.deleteEntry(editingEntry.id)
+    }
+    handleClose()
+  }
+
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
       <Header onOpenConfig={() => {}} />
       <main className="mx-auto max-w-4xl space-y-4 p-4">
-        <StatsBar stats={MOCK_STATS} />
+        <StatsBar stats={pto.stats} />
         <LeaveList
-          entries={MOCK_ENTRIES}
+          entries={pto.entries}
           onAdd={handleAdd}
           onEdit={handleEdit}
         />
@@ -57,10 +73,8 @@ const Home = () => {
       {isModalOpen && (
         <LeaveModal
           entry={editingEntry}
-          onSave={() => {
-            handleClose()
-          }}
-          onDelete={editingEntry !== undefined ? handleClose : undefined}
+          onSave={handleSave}
+          onDelete={editingEntry !== undefined ? handleDelete : undefined}
           onClose={handleClose}
         />
       )}
