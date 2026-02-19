@@ -93,8 +93,7 @@ const Home = () => {
   }
 
   const handleImportJson = (json: string) => {
-    const data = storageService.importJson(json)
-    pto.updateConfig(data.config)
+    storageService.importJson(json)
     // Reload page to fully re-hydrate from storage
     window.location.reload()
   }
