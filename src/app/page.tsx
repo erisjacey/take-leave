@@ -1,6 +1,12 @@
 'use client'
 
-import { Header, LeaveList, LeaveModal, StatsBar } from '@/components'
+import {
+  ForecastChart,
+  Header,
+  LeaveList,
+  LeaveModal,
+  StatsBar,
+} from '@/components'
 import { usePtoData } from '@/hooks'
 import type { LeaveEntry } from '@/lib'
 import { useState } from 'react'
@@ -64,6 +70,7 @@ const Home = () => {
       <Header onOpenConfig={() => {}} />
       <main className="mx-auto max-w-4xl space-y-4 p-4">
         <StatsBar stats={pto.stats} />
+        <ForecastChart chartData={pto.chartData} />
         <LeaveList
           entries={pto.entries}
           onAdd={handleAdd}

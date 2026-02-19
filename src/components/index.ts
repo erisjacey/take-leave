@@ -1,3 +1,4 @@
+export { default as ForecastChart } from './forecast-chart'
 export { default as Header } from './header'
 export { default as LeaveList } from './leave-list'
 export { default as LeaveModal } from './leave-modal'
