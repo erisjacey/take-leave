@@ -17,6 +17,12 @@
   --chart-tooltip-bg: #ffffff;
   --chart-tooltip-border: #e4e4e7;
   --chart-danger: #ef4444;
+
+  /* Day picker */
+  --rdp-accent-color: #3b82f6;
+  --rdp-accent-background-color: #eff6ff;
+  --rdp-today-color: #6366f1;
+  --rdp-outside-opacity: 0.4;
 }
 
 .dark {
@@ -27,4 +33,27 @@
   --chart-tooltip-bg: #18181b;
   --chart-tooltip-border: #3f3f46;
   --chart-danger: #ef4444;
+}
+
+/* ─── Day picker overrides ─────────────────────────────────────────────── */
+
+.rdp-custom {
+  --rdp-day-height: 2rem;
+  --rdp-day-width: 2rem;
+  --rdp-accent-color: #3b82f6;
+  --rdp-accent-background-color: #eff6ff;
+  --rdp-today-color: #6366f1;
+  --rdp-outside-opacity: 0.4;
+  font-size: 0.8125rem;
+}
+
+.dark .rdp-custom {
+  --rdp-accent-color: #60a5fa;
+  --rdp-accent-background-color: #1e3a5f;
+  --rdp-today-color: #818cf8;
+  --rdp-range_middle-background-color: #1e3a5f;
+  --rdp-range_middle-color: #e4e4e7;
+  --rdp-range_start-color: #ffffff;
+  --rdp-range_end-color: #ffffff;
+  color: #e4e4e7;
 }

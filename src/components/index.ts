@@ -1,4 +1,5 @@
 export { default as ConfigModal } from './config-modal'
+export { default as DateRangePicker } from './date-range-picker'
 export { default as ForecastChart } from './forecast-chart'
 export { default as Header } from './header'
 export { default as LeaveList } from './leave-list'

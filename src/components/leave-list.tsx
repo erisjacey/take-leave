@@ -1,5 +1,5 @@
 import type { LeaveEntry, LeaveTag } from '@/lib'
-import { TAG_CONFIG } from '@/lib'
+import { formatDate, TAG_CONFIG } from '@/lib'
 import {
   Calendar,
   Coffee,
@@ -66,7 +66,9 @@ const EntryRow = ({ entry, onEdit }: EntryRowProps) => {
           {title}
         </p>
         <p className="text-xs text-zinc-500 dark:text-zinc-400">
-          {startDate === endDate ? startDate : `${startDate} – ${endDate}`}
+          {startDate === endDate
+            ? formatDate(startDate)
+            : `${formatDate(startDate)} – ${formatDate(endDate)}`}
         </p>
       </div>
 

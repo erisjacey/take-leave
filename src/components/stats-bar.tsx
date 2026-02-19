@@ -1,4 +1,5 @@
 import type { PtoStats } from '@/lib'
+import { formatDate } from '@/lib'
 
 interface StatCardProps {
   label: string
@@ -41,7 +42,9 @@ const StatsBar = ({ stats }: StatsBarProps) => {
   } = stats
 
   const nextAccrualSub =
-    nextAccrualDate !== null ? `on ${nextAccrualDate}` : 'none remaining'
+    nextAccrualDate !== null
+      ? `on ${formatDate(nextAccrualDate)}`
+      : 'none remaining'
 
   return (
     <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">

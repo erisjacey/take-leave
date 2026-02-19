@@ -4,6 +4,7 @@ import type { LeaveEntry, LeaveTag, LeaveType } from '@/lib'
 import { TAG_CONFIG } from '@/lib'
 import { X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
+import DateRangePicker from './date-range-picker'
 
 interface LeaveModalProps {
   entry?: LeaveEntry
@@ -79,14 +80,13 @@ const LeaveModal = ({ entry, onSave, onDelete, onClose }: LeaveModalProps) => {
     setForm((prev) => ({ ...prev, ...patch }))
   }
 
-  const handleStartDateChange = (value: string) => {
-    const newDays = countWeekdays(value, form.endDate)
-    update({ startDate: value, days: newDays > 0 ? newDays : form.days })
-  }
-
-  const handleEndDateChange = (value: string) => {
-    const newDays = countWeekdays(form.startDate, value)
-    update({ endDate: value, days: newDays > 0 ? newDays : form.days })
+  const handleDateRangeChange = (start: string, end: string) => {
+    const newDays = countWeekdays(start, end)
+    update({
+      startDate: start,
+      endDate: end,
+      days: newDays > 0 ? newDays : form.days,
+    })
   }
 
   const handleSubmit = (e: React.SyntheticEvent) => {
@@ -209,36 +209,15 @@ const LeaveModal = ({ entry, onSave, onDelete, onClose }: LeaveModalProps) => {
             </div>
 
             {/* Date range */}
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="mb-1 block text-xs font-medium text-zinc-700 dark:text-zinc-300">
-                  Start Date
-                </label>
-                <input
-                  type="date"
-                  required
-                  value={form.startDate}
-                  onChange={(e) => {
-                    handleStartDateChange(e.target.value)
-                  }}
-                  className={inputClass}
-                />
-              </div>
-              <div>
-                <label className="mb-1 block text-xs font-medium text-zinc-700 dark:text-zinc-300">
-                  End Date
-                </label>
-                <input
-                  type="date"
-                  required
-                  value={form.endDate}
-                  min={form.startDate}
-                  onChange={(e) => {
-                    handleEndDateChange(e.target.value)
-                  }}
-                  className={inputClass}
-                />
-              </div>
+            <div>
+              <label className="mb-1 block text-xs font-medium text-zinc-700 dark:text-zinc-300">
+                Dates
+              </label>
+              <DateRangePicker
+                startDate={form.startDate}
+                endDate={form.endDate}
+                onChange={handleDateRangeChange}
+              />
             </div>
 
             {/* Days */}
