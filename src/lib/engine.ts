@@ -118,14 +118,10 @@ export const mergeAndSortEvents = (events: TimelineEvent[]): TimelineEvent[] =>
 export const computeRunningBalance = (
   events: TimelineEvent[],
   startingBalance: number,
-  opts?: { allowNegative?: boolean },
 ): TimelineEvent[] => {
   let balance = startingBalance
   return events.map((event) => {
     balance += event.days
-    if (!opts?.allowNegative && balance < 0) {
-      balance = 0
-    }
     return { ...event, balanceAfter: balance }
   })
 }

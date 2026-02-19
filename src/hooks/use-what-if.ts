@@ -44,11 +44,7 @@ const useWhatIf = (
       ...generateLeaveEvents(yearEntries, 'annual'),
     ])
 
-    const timeline = computeRunningBalance(
-      events,
-      annualConfig.startingBalance,
-      { allowNegative: true },
-    )
+    const timeline = computeRunningBalance(events, annualConfig.startingBalance)
 
     // Find balance at end of target month (last event on or before month end)
     const monthStr = input.month.toString().padStart(2, '0')
