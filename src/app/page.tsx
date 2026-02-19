@@ -6,6 +6,7 @@ import {
   LeaveList,
   LeaveModal,
   StatsBar,
+  WhatIf,
 } from '@/components'
 import { usePtoData } from '@/hooks'
 import type { LeaveEntry } from '@/lib'
@@ -71,11 +72,14 @@ const Home = () => {
       <main className="mx-auto max-w-4xl space-y-4 p-4">
         <StatsBar stats={pto.stats} />
         <ForecastChart chartData={pto.chartData} />
-        <LeaveList
-          entries={pto.entries}
-          onAdd={handleAdd}
-          onEdit={handleEdit}
-        />
+        <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
+          <LeaveList
+            entries={pto.entries}
+            onAdd={handleAdd}
+            onEdit={handleEdit}
+          />
+          <WhatIf config={pto.config} entries={pto.entries} />
+        </div>
       </main>
       {isModalOpen && (
         <LeaveModal
