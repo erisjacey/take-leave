@@ -17,6 +17,7 @@
   --chart-tooltip-bg: #ffffff;
   --chart-tooltip-border: #e4e4e7;
   --chart-danger: #ef4444;
+  --chart-sick-line: #f59e0b;
 
   /* Day picker */
   --rdp-accent-color: #3b82f6;
@@ -33,6 +34,7 @@
   --chart-tooltip-bg: #18181b;
   --chart-tooltip-border: #3f3f46;
   --chart-danger: #ef4444;
+  --chart-sick-line: #fbbf24;
 }
 
 /* ─── Day picker overrides ─────────────────────────────────────────────── */

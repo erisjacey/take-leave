@@ -1,7 +1,8 @@
 'use client'
 
 import {
-  buildChartData,
+  buildAnnualLeaveChartData,
+  buildSickLeaveChartData,
   computeStats,
   storageService,
   DEFAULT_CONFIG,
@@ -20,7 +21,8 @@ interface PtoData {
   config: PtoConfig
   entries: LeaveEntry[]
   stats: PtoStats
-  chartData: ChartDataPoint[]
+  annualLeaveChartData: ChartDataPoint[]
+  sickLeaveChartData: ChartDataPoint[] | null
   isLoading: boolean
   hasOnboarded: boolean
   addEntry: (data: Omit<LeaveEntry, 'id'>) => void
@@ -78,13 +80,18 @@ const usePtoData = (): PtoData => {
   }
 
   const stats = computeStats(data.config, data.entries)
-  const chartData = buildChartData(data.config, data.entries)
+  const annualLeaveChartData = buildAnnualLeaveChartData(
+    data.config,
+    data.entries,
+  )
+  const sickLeaveChartData = buildSickLeaveChartData(data.config, data.entries)
 
   return {
     config: data.config,
     entries: data.entries,
     stats,
-    chartData,
+    annualLeaveChartData,
+    sickLeaveChartData,
     isLoading,
     hasOnboarded,
     addEntry,

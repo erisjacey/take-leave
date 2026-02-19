@@ -103,7 +103,10 @@ const Home = () => {
       <Header onOpenConfig={handleConfigOpen} />
       <main className="mx-auto max-w-4xl space-y-4 px-3 py-4 sm:px-4">
         <StatsBar stats={pto.stats} />
-        <ForecastChart chartData={pto.chartData} />
+        <ForecastChart
+          annualLeaveChartData={pto.annualLeaveChartData}
+          sickLeaveChartData={pto.sickLeaveChartData}
+        />
         <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
           <LeaveList
             entries={pto.entries}

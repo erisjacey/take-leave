@@ -128,7 +128,40 @@ export const computeRunningBalance = (
 
 // ─── Chart data ───────────────────────────────────────────────────────────────
 
-export const buildChartData = (
+/** Map a timeline into 12 monthly ChartDataPoints */
+const timelineToChartData = (
+  timeline: TimelineEvent[],
+  year: number,
+  startingBalance: number,
+): ChartDataPoint[] => {
+  const today = new Date()
+  const currentYear = today.getFullYear()
+  const currentMonth = today.getMonth() + 1 // 1–12
+
+  let lastBalance = startingBalance
+
+  return Array.from({ length: 12 }, (_, i) => {
+    const m = i + 1
+    const monthPrefix = `${year.toString()}-${padTwo(m)}-`
+    const monthEvents = timeline.filter((e) => e.date.startsWith(monthPrefix))
+
+    const hasLeave = monthEvents.some((e) => e.type === 'leave')
+
+    if (monthEvents.length > 0) {
+      lastBalance = monthEvents[monthEvents.length - 1].balanceAfter
+    }
+
+    return {
+      month: MONTHS[i],
+      monthIndex: m,
+      balance: lastBalance,
+      isPast: year === currentYear && m < currentMonth,
+      hasLeave,
+    }
+  })
+}
+
+export const buildAnnualLeaveChartData = (
   config: PtoConfig,
   entries: LeaveEntry[],
 ): ChartDataPoint[] => {
@@ -152,31 +185,33 @@ export const buildChartData = (
     annualConfig.startingBalance,
   )
 
-  const today = new Date()
-  const currentYear = today.getFullYear()
-  const currentMonth = today.getMonth() + 1 // 1–12
+  return timelineToChartData(
+    timeline,
+    config.year,
+    annualConfig.startingBalance,
+  )
+}
 
-  let lastBalance = annualConfig.startingBalance
+/** Sick leave chart data — same shape as annual but no extras, lump_sum only */
+export const buildSickLeaveChartData = (
+  config: PtoConfig,
+  entries: LeaveEntry[],
+): ChartDataPoint[] | null => {
+  const sickConfig = config.leaveTypes.find((lt) => lt.type === 'sick')
+  if (!sickConfig) {
+    return null
+  }
 
-  return Array.from({ length: 12 }, (_, i) => {
-    const m = i + 1
-    const monthPrefix = `${config.year.toString()}-${padTwo(m)}-`
-    const monthEvents = timeline.filter((e) => e.date.startsWith(monthPrefix))
+  const yearPrefix = `${config.year.toString()}-`
+  const yearEntries = entries.filter((e) => e.startDate.startsWith(yearPrefix))
 
-    const hasLeave = monthEvents.some((e) => e.type === 'leave')
+  const allEvents = mergeAndSortEvents([
+    ...generateAccrualEvents(sickConfig, config.year),
+    ...generateLeaveEvents(yearEntries, 'sick'),
+  ])
+  const timeline = computeRunningBalance(allEvents, sickConfig.startingBalance)
 
-    if (monthEvents.length > 0) {
-      lastBalance = monthEvents[monthEvents.length - 1].balanceAfter
-    }
-
-    return {
-      month: MONTHS[i],
-      monthIndex: m,
-      balance: lastBalance,
-      isPast: config.year === currentYear && m < currentMonth,
-      hasLeave,
-    }
-  })
+  return timelineToChartData(timeline, config.year, sickConfig.startingBalance)
 }
 
 // ─── Stats ────────────────────────────────────────────────────────────────────
