@@ -1,6 +1,7 @@
 'use client'
 
 import {
+  ConfigModal,
   ForecastChart,
   Header,
   LeaveList,
@@ -9,12 +10,14 @@ import {
   WhatIf,
 } from '@/components'
 import { usePtoData } from '@/hooks'
-import type { LeaveEntry } from '@/lib'
+import type { LeaveEntry, PtoConfig } from '@/lib'
+import { storageService } from '@/lib'
 import { useState } from 'react'
 
 const Home = () => {
   const pto = usePtoData()
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false)
+  const [isConfigModalOpen, setIsConfigModalOpen] = useState(false)
   const [editingEntry, setEditingEntry] = useState<LeaveEntry | undefined>()
 
   if (pto.isLoading) {
@@ -29,64 +32,108 @@ const Home = () => {
     return (
       <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-zinc-950">
         <p className="text-sm text-zinc-400">
-          Setup coming soon — onboarding in step 15.
+          Setup coming soon — onboarding in step 16.
         </p>
       </div>
     )
   }
 
-  const handleAdd = () => {
+  // ─── Leave modal handlers ──────────────────────────────────────────────────
+
+  const handleLeaveAdd = () => {
     setEditingEntry(undefined)
-    setIsModalOpen(true)
+    setIsLeaveModalOpen(true)
   }
 
-  const handleEdit = (entry: LeaveEntry) => {
+  const handleLeaveEdit = (entry: LeaveEntry) => {
     setEditingEntry(entry)
-    setIsModalOpen(true)
+    setIsLeaveModalOpen(true)
   }
 
-  const handleClose = () => {
-    setIsModalOpen(false)
+  const handleLeaveClose = () => {
+    setIsLeaveModalOpen(false)
     setEditingEntry(undefined)
   }
 
-  const handleSave = (data: Omit<LeaveEntry, 'id'>) => {
+  const handleLeaveSave = (data: Omit<LeaveEntry, 'id'>) => {
     if (editingEntry !== undefined) {
       pto.updateEntry({ ...data, id: editingEntry.id })
     } else {
       pto.addEntry(data)
     }
-    handleClose()
+    handleLeaveClose()
   }
 
-  const handleDelete = () => {
+  const handleLeaveDelete = () => {
     if (editingEntry !== undefined) {
       pto.deleteEntry(editingEntry.id)
     }
-    handleClose()
+    handleLeaveClose()
+  }
+
+  // ─── Config modal handlers ─────────────────────────────────────────────────
+
+  const handleConfigOpen = () => {
+    setIsConfigModalOpen(true)
+  }
+
+  const handleConfigClose = () => {
+    setIsConfigModalOpen(false)
+  }
+
+  const handleConfigSave = (config: PtoConfig) => {
+    pto.updateConfig(config)
+    setIsConfigModalOpen(false)
+  }
+
+  const handleExportJson = () => {
+    const json = storageService.exportJson()
+    const blob = new Blob([json], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `takeleave-backup-${pto.config.year.toString()}.json`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  const handleImportJson = (json: string) => {
+    const data = storageService.importJson(json)
+    pto.updateConfig(data.config)
+    // Reload page to fully re-hydrate from storage
+    window.location.reload()
   }
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
-      <Header onOpenConfig={() => {}} />
+      <Header onOpenConfig={handleConfigOpen} />
       <main className="mx-auto max-w-4xl space-y-4 p-4">
         <StatsBar stats={pto.stats} />
         <ForecastChart chartData={pto.chartData} />
         <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
           <LeaveList
             entries={pto.entries}
-            onAdd={handleAdd}
-            onEdit={handleEdit}
+            onAdd={handleLeaveAdd}
+            onEdit={handleLeaveEdit}
           />
           <WhatIf config={pto.config} entries={pto.entries} />
         </div>
       </main>
-      {isModalOpen && (
+      {isLeaveModalOpen && (
         <LeaveModal
           entry={editingEntry}
-          onSave={handleSave}
-          onDelete={editingEntry !== undefined ? handleDelete : undefined}
-          onClose={handleClose}
+          onSave={handleLeaveSave}
+          onDelete={editingEntry !== undefined ? handleLeaveDelete : undefined}
+          onClose={handleLeaveClose}
+        />
+      )}
+      {isConfigModalOpen && (
+        <ConfigModal
+          config={pto.config}
+          onSave={handleConfigSave}
+          onClose={handleConfigClose}
+          onExportJson={handleExportJson}
+          onImportJson={handleImportJson}
         />
       )}
     </div>
