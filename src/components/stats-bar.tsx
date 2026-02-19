@@ -44,7 +44,7 @@ const StatsBar = ({ stats }: StatsBarProps) => {
     nextAccrualDate !== null ? `on ${nextAccrualDate}` : 'none remaining'
 
   return (
-    <div className="grid grid-cols-2 gap-3 p-4 lg:grid-cols-4">
+    <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
       <StatCard
         label="Current Balance"
         value={`${currentBalance.toFixed(1)} days`}

@@ -6,3 +6,25 @@
   --font-sans: var(--font-dm-sans);
   --font-mono: var(--font-space-mono);
 }
+
+/* ─── Chart color tokens ──────────────────────────────────────────────────── */
+
+:root {
+  --chart-line: #6366f1;
+  --chart-fill: #818cf8;
+  --chart-grid: #e4e4e7;
+  --chart-axis: #71717a;
+  --chart-tooltip-bg: #ffffff;
+  --chart-tooltip-border: #e4e4e7;
+  --chart-danger: #ef4444;
+}
+
+.dark {
+  --chart-line: #818cf8;
+  --chart-fill: #6366f1;
+  --chart-grid: #3f3f46;
+  --chart-axis: #a1a1aa;
+  --chart-tooltip-bg: #18181b;
+  --chart-tooltip-border: #3f3f46;
+  --chart-danger: #ef4444;
+}

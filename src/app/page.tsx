@@ -102,7 +102,7 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
       <Header onOpenConfig={handleConfigOpen} />
-      <main className="mx-auto max-w-4xl space-y-4 p-4">
+      <main className="mx-auto max-w-4xl space-y-4 px-3 py-4 sm:px-4">
         <StatsBar stats={pto.stats} />
         <ForecastChart chartData={pto.chartData} />
         <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
@@ -111,7 +111,9 @@ const Home = () => {
             onAdd={handleLeaveAdd}
             onEdit={handleLeaveEdit}
           />
-          <WhatIf config={pto.config} entries={pto.entries} />
+          <div className="lg:sticky lg:top-[4.5rem] lg:self-start">
+            <WhatIf config={pto.config} entries={pto.entries} />
+          </div>
         </div>
       </main>
       {isLeaveModalOpen && (

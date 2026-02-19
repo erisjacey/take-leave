@@ -115,12 +115,12 @@ const LeaveModal = ({ entry, onSave, onDelete, onClose }: LeaveModalProps) => {
     <div
       ref={backdropRef}
       onClick={handleBackdropClick}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-0 sm:p-4"
       role="dialog"
       aria-modal="true"
       aria-label={isEdit ? 'Edit leave entry' : 'Add leave entry'}
     >
-      <div className="w-full max-w-md rounded-xl bg-white shadow-xl dark:bg-zinc-900">
+      <div className="w-full overflow-y-auto rounded-xl bg-white shadow-xl max-sm:h-full max-sm:rounded-none sm:max-w-md dark:bg-zinc-900">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-zinc-200 px-5 py-4 dark:border-zinc-800">
           <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-50">

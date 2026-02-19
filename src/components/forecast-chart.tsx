@@ -1,7 +1,6 @@
 'use client'
 
 import type { ChartDataPoint } from '@/lib'
-import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
 import {
   Area,
@@ -18,9 +17,48 @@ interface ForecastChartProps {
   chartData: ChartDataPoint[]
 }
 
+interface CombinedPoint {
+  month: string
+  past: number | null
+  future: number | null
+}
+
+interface TooltipPayloadEntry {
+  dataKey: string
+  value: number | null
+}
+
+interface CustomTooltipProps {
+  active?: boolean
+  label?: string
+  payload?: TooltipPayloadEntry[]
+}
+
+const ChartTooltip = ({ active, label, payload }: CustomTooltipProps) => {
+  if (!active || !payload || payload.length === 0) {
+    return null
+  }
+
+  const pastEntry = payload.find((p) => p.dataKey === 'past')
+  const futureEntry = payload.find((p) => p.dataKey === 'future')
+  const value = pastEntry?.value ?? futureEntry?.value
+
+  if (value === null || value === undefined) {
+    return null
+  }
+
+  return (
+    <div className="rounded-md border border-[var(--chart-tooltip-border)] bg-[var(--chart-tooltip-bg)] px-3 py-2 font-mono text-xs shadow-sm">
+      <p className="mb-1 text-[var(--chart-axis)]">{label}</p>
+      <p className="text-zinc-900 dark:text-zinc-50">
+        Balance: {value.toFixed(1)} days
+      </p>
+    </div>
+  )
+}
+
 const ForecastChart = ({ chartData }: ForecastChartProps) => {
   const [mounted, setMounted] = useState(false)
-  const { resolvedTheme } = useTheme()
 
   useEffect(() => {
     setMounted(true)
@@ -32,22 +70,17 @@ const ForecastChart = ({ chartData }: ForecastChartProps) => {
     )
   }
 
-  const isDark = resolvedTheme === 'dark'
-
-  const gridColor = isDark ? '#3f3f46' : '#e4e4e7' // zinc-700 / zinc-200
-  const axisColor = isDark ? '#a1a1aa' : '#71717a' // zinc-400 / zinc-500
-  const tooltipBg = isDark ? '#18181b' : '#ffffff' // zinc-900 / white
-  const tooltipBorder = isDark ? '#3f3f46' : '#e4e4e7'
-
-  // Split data into past and future series (with overlap at boundary)
+  // Split data into past and future series
+  // Past includes past months + first future month (bridge point for smooth connection)
+  // Future includes only non-past months (no backward overlap that causes dashed line in past region)
   const pastData = chartData.map((point) =>
     point.isPast || isFirstFuture(point, chartData) ? point.balance : null,
   )
-  const futureData = chartData.map((point, i) =>
-    !point.isPast || isLastPast(i, chartData) ? point.balance : null,
+  const futureData = chartData.map((point) =>
+    !point.isPast ? point.balance : null,
   )
 
-  const combined = chartData.map((point, i) => ({
+  const combined: CombinedPoint[] = chartData.map((point, i) => ({
     month: point.month,
     past: pastData[i],
     future: futureData[i],
@@ -61,96 +94,84 @@ const ForecastChart = ({ chartData }: ForecastChartProps) => {
       <ResponsiveContainer width="100%" height={220}>
         <AreaChart
           data={combined}
-          margin={{ top: 4, right: 4, bottom: 0, left: -12 }}
+          margin={{ top: 4, right: 4, bottom: 0, left: -4 }}
         >
           <defs>
             <linearGradient id="pastGradient" x1="0" y1="0" x2="0" y2="1">
               <stop
                 offset="0%"
-                stopColor={isDark ? '#6366f1' : '#818cf8'}
+                stopColor="var(--chart-fill)"
                 stopOpacity={0.3}
               />
               <stop
                 offset="100%"
-                stopColor={isDark ? '#6366f1' : '#818cf8'}
+                stopColor="var(--chart-fill)"
                 stopOpacity={0.05}
               />
             </linearGradient>
             <linearGradient id="futureGradient" x1="0" y1="0" x2="0" y2="1">
               <stop
                 offset="0%"
-                stopColor={isDark ? '#6366f1' : '#818cf8'}
+                stopColor="var(--chart-fill)"
                 stopOpacity={0.15}
               />
               <stop
                 offset="100%"
-                stopColor={isDark ? '#6366f1' : '#818cf8'}
+                stopColor="var(--chart-fill)"
                 stopOpacity={0.02}
               />
             </linearGradient>
           </defs>
           <CartesianGrid
             strokeDasharray="3 3"
-            stroke={gridColor}
+            stroke="var(--chart-grid)"
             vertical={false}
           />
           <XAxis
             dataKey="month"
             tick={{
               fontSize: 11,
-              fill: axisColor,
+              fill: 'var(--chart-axis)',
               fontFamily: 'var(--font-space-mono)',
             }}
             tickLine={false}
-            axisLine={{ stroke: gridColor }}
+            axisLine={{ stroke: 'var(--chart-grid)' }}
           />
           <YAxis
             tick={{
               fontSize: 11,
-              fill: axisColor,
+              fill: 'var(--chart-axis)',
               fontFamily: 'var(--font-space-mono)',
             }}
             tickLine={false}
             axisLine={false}
             allowDecimals={false}
+            width={36}
           />
-          <Tooltip
-            contentStyle={{
-              backgroundColor: tooltipBg,
-              border: `1px solid ${tooltipBorder}`,
-              borderRadius: '6px',
-              fontSize: '12px',
-              fontFamily: 'var(--font-space-mono)',
-            }}
-            formatter={(value: number | undefined) => [
-              `${(value ?? 0).toFixed(1)} days`,
-              'Balance',
-            ]}
-            labelStyle={{ color: axisColor, marginBottom: '2px' }}
-          />
+          <Tooltip content={<ChartTooltip />} />
           <ReferenceLine
             y={0}
-            stroke="#ef4444"
+            stroke="var(--chart-danger)"
             strokeDasharray="4 4"
             strokeWidth={1}
           />
           <Area
             type="monotone"
-            dataKey="past"
-            stroke={isDark ? '#818cf8' : '#6366f1'}
+            dataKey="future"
+            stroke="var(--chart-line)"
             strokeWidth={2}
-            fill="url(#pastGradient)"
+            strokeDasharray="6 3"
+            fill="url(#futureGradient)"
             connectNulls={false}
             dot={false}
             activeDot={{ r: 4, strokeWidth: 0 }}
           />
           <Area
             type="monotone"
-            dataKey="future"
-            stroke={isDark ? '#818cf8' : '#6366f1'}
+            dataKey="past"
+            stroke="var(--chart-line)"
             strokeWidth={2}
-            strokeDasharray="6 3"
-            fill="url(#futureGradient)"
+            fill="url(#pastGradient)"
             connectNulls={false}
             dot={false}
             activeDot={{ r: 4, strokeWidth: 0 }}
@@ -171,14 +192,6 @@ const isFirstFuture = (
   }
   const idx = data.indexOf(point)
   return idx > 0 && data[idx - 1].isPast
-}
-
-/** Check if this is the last past point (used to create overlap with future) */
-const isLastPast = (index: number, data: ChartDataPoint[]): boolean => {
-  if (!data[index].isPast) {
-    return false
-  }
-  return index < data.length - 1 && !data[index + 1].isPast
 }
 
 export default ForecastChart

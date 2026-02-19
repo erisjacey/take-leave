@@ -53,9 +53,9 @@ const EntryRow = ({ entry, onEdit }: EntryRowProps) => {
   const Icon = TAG_ICONS[tag]
 
   return (
-    <div className="flex items-center gap-3 rounded-lg border border-zinc-100 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-900">
+    <div className="flex items-center gap-3 rounded-lg border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-900">
       <span
-        className={`flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${tagConfig.bgClass} ${tagConfig.textClass}`}
+        className={`flex w-[4.5rem] shrink-0 items-center justify-center gap-1 rounded-full px-1.5 py-0.5 text-xs font-medium sm:w-[5.5rem] sm:px-2 ${tagConfig.bgClass} ${tagConfig.textClass}`}
       >
         <Icon size={11} />
         {tagConfig.label}
@@ -80,7 +80,7 @@ const EntryRow = ({ entry, onEdit }: EntryRowProps) => {
           onEdit(entry)
         }}
         aria-label={`Edit ${title}`}
-        className="flex h-7 w-7 items-center justify-center rounded text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
+        className="flex h-7 w-7 items-center justify-center rounded text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-700 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
       >
         <Pencil size={13} />
       </button>
@@ -119,7 +119,7 @@ const LeaveList = ({ entries, onAdd, onEdit }: LeaveListProps) => {
     .sort((a, b) => b.startDate.localeCompare(a.startDate))
 
   return (
-    <div className="rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-950">
+    <div className="overflow-hidden rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-950">
       <div className="flex items-center justify-between border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
         <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">
           Leave Entries
@@ -127,7 +127,7 @@ const LeaveList = ({ entries, onAdd, onEdit }: LeaveListProps) => {
         <button
           type="button"
           onClick={onAdd}
-          className="flex items-center gap-1 rounded-md px-2 py-1 text-sm font-medium text-blue-600 transition-colors hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-950/40"
+          className="flex items-center gap-1 rounded-md px-2 py-1 text-sm font-medium text-blue-600 transition-colors hover:bg-blue-50 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none dark:text-blue-400 dark:hover:bg-blue-950/40"
         >
           <Plus size={14} />
           Add
