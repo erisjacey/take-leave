@@ -88,6 +88,7 @@ const DateRangePicker = ({
         <div className="absolute top-full right-0 z-50 mt-1 rounded-lg border border-zinc-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
           <DayPicker
             mode="range"
+            navLayout="around"
             selected={selected}
             onSelect={handleSelect}
             defaultMonth={toDate(startDate)}
@@ -95,7 +96,8 @@ const DateRangePicker = ({
               root: `${defaultClassNames.root} rdp-custom`,
               today: 'rdp-today-custom',
               selected: 'rdp-selected-custom',
-              chevron: 'rdp-chevron-custom',
+              chevron: `${defaultClassNames.chevron} rdp-chevron-custom`,
+              month_caption: `${defaultClassNames.month_caption} rdp-month-caption-custom`,
             }}
           />
         </div>
