@@ -1,14 +1,6 @@
 import type { LeaveEntry, LeaveTag } from '@/lib'
 import { formatDate, TAG_CONFIG } from '@/lib'
-import {
-  Calendar,
-  Coffee,
-  Pencil,
-  Pin,
-  Plane,
-  Plus,
-  Users,
-} from 'lucide-react'
+import { Calendar, Coffee, Pencil, Pin, Plane, Plus, Users } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
 const TAG_ICONS: Record<LeaveTag, LucideIcon> = {

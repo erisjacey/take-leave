@@ -81,9 +81,19 @@ const ForecastChart = ({
 }: ForecastChartProps) => {
   const [mounted, setMounted] = useState(false)
   const [showSick, setShowSick] = useState(true)
+  const [isWide, setIsWide] = useState(false)
 
   useEffect(() => {
+    const mql = window.matchMedia('(min-width: 640px)')
+    setIsWide(mql.matches)
+    const handler = (e: MediaQueryListEvent) => {
+      setIsWide(e.matches)
+    }
+    mql.addEventListener('change', handler)
     setMounted(true)
+    return () => {
+      mql.removeEventListener('change', handler)
+    }
   }, [])
 
   if (!mounted) {
@@ -176,11 +186,15 @@ const ForecastChart = ({
           />
           <XAxis
             dataKey="month"
-            tick={{
-              fontSize: 11,
-              fill: 'var(--chart-axis)',
-              fontFamily: 'var(--font-space-mono)',
-            }}
+            tick={
+              isWide
+                ? {
+                    fontSize: 11,
+                    fill: 'var(--chart-axis)',
+                    fontFamily: 'var(--font-space-mono)',
+                  }
+                : false
+            }
             tickLine={false}
             axisLine={{ stroke: 'var(--chart-grid)' }}
           />
