@@ -1,6 +1,15 @@
 import type { LeaveEntry, LeaveTag } from '@/lib'
 import { formatDate, TAG_CONFIG } from '@/lib'
-import { Calendar, Coffee, Pencil, Pin, Plane, Plus, Users } from 'lucide-react'
+import {
+  Calendar,
+  Coffee,
+  Pencil,
+  Pin,
+  Plane,
+  Plus,
+  Stethoscope,
+  Users,
+} from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
 const TAG_ICONS: Record<LeaveTag, LucideIcon> = {
@@ -38,17 +47,22 @@ interface EntryRowProps {
 }
 
 const EntryRow = ({ entry, onEdit }: EntryRowProps) => {
-  const { tag, title, startDate, endDate, days } = entry
+  const { tag, leaveType, title, startDate, endDate, days } = entry
+  const isSick = leaveType === 'sick'
   const tagConfig = TAG_CONFIG[tag]
-  const Icon = TAG_ICONS[tag]
+  const Icon = isSick ? Stethoscope : TAG_ICONS[tag]
 
   return (
     <div className="flex items-center gap-3 rounded-lg border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-900">
       <span
-        className={`flex w-[4.5rem] shrink-0 items-center justify-center gap-1 rounded-full px-1.5 py-0.5 text-xs font-medium sm:w-[5.5rem] sm:px-2 ${tagConfig.bgClass} ${tagConfig.textClass}`}
+        className={`flex w-[4.5rem] shrink-0 items-center justify-center gap-1 rounded-full px-1.5 py-0.5 text-xs font-medium sm:w-[5.5rem] sm:px-2 ${
+          isSick
+            ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300'
+            : `${tagConfig.bgClass} ${tagConfig.textClass}`
+        }`}
       >
         <Icon size={11} />
-        {tagConfig.label}
+        {isSick ? 'Sick' : tagConfig.label}
       </span>
 
       <div className="min-w-0 flex-1">

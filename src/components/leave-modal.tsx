@@ -181,33 +181,35 @@ const LeaveModal = ({ entry, onSave, onDelete, onClose }: LeaveModalProps) => {
               </div>
             </div>
 
-            {/* Tag */}
-            <div>
-              <label className="mb-1 block text-xs font-medium text-zinc-700 dark:text-zinc-300">
-                Tag
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {TAGS.map((t) => {
-                  const cfg = TAG_CONFIG[t]
-                  return (
-                    <button
-                      key={t}
-                      type="button"
-                      onClick={() => {
-                        update({ tag: t })
-                      }}
-                      className={`rounded-full px-2.5 py-1 text-xs font-medium transition-opacity ${cfg.bgClass} ${cfg.textClass} ${
-                        form.tag === t
-                          ? 'ring-2 ring-blue-500 ring-offset-1'
-                          : 'opacity-60 hover:opacity-100'
-                      }`}
-                    >
-                      {cfg.label}
-                    </button>
-                  )
-                })}
+            {/* Tag (hidden for sick leave) */}
+            {form.leaveType !== 'sick' && (
+              <div>
+                <label className="mb-1 block text-xs font-medium text-zinc-700 dark:text-zinc-300">
+                  Tag
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {TAGS.map((t) => {
+                    const cfg = TAG_CONFIG[t]
+                    return (
+                      <button
+                        key={t}
+                        type="button"
+                        onClick={() => {
+                          update({ tag: t })
+                        }}
+                        className={`rounded-full px-2.5 py-1 text-xs font-medium transition-opacity ${cfg.bgClass} ${cfg.textClass} ${
+                          form.tag === t
+                            ? 'ring-2 ring-blue-500 ring-offset-1'
+                            : 'opacity-60 hover:opacity-100'
+                        }`}
+                      >
+                        {cfg.label}
+                      </button>
+                    )
+                  })}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Date range */}
             <div>
