@@ -44,7 +44,7 @@ export interface PtoConfig {
 
 // ─── Entries ──────────────────────────────────────────────────────────────────
 
-export type LeaveTag = 'travel' | 'personal' | 'family' | 'gaming' | 'other'
+export type LeaveTag = 'travel' | 'personal' | 'family' | 'other'
 
 export interface LeaveEntry {
   id: string

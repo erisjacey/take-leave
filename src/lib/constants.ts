@@ -49,11 +49,6 @@ export const TAG_CONFIG: Record<LeaveTag, TagConfig> = {
     bgClass: 'bg-pink-100 dark:bg-pink-900/30',
     textClass: 'text-pink-700 dark:text-pink-300',
   },
-  gaming: {
-    label: 'Gaming',
-    bgClass: 'bg-amber-100 dark:bg-amber-900/30',
-    textClass: 'text-amber-700 dark:text-amber-300',
-  },
   other: {
     label: 'Other',
     bgClass: 'bg-gray-100 dark:bg-gray-800',

@@ -3,7 +3,6 @@ import { formatDate, TAG_CONFIG } from '@/lib'
 import {
   Calendar,
   Coffee,
-  Gamepad2,
   Pencil,
   Pin,
   Plane,
@@ -16,7 +15,6 @@ const TAG_ICONS: Record<LeaveTag, LucideIcon> = {
   travel: Plane,
   personal: Coffee,
   family: Users,
-  gaming: Gamepad2,
   other: Pin,
 }
 
