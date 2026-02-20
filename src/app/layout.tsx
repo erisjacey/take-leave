@@ -17,6 +17,23 @@ const spaceMono = Space_Mono({
 export const metadata: Metadata = {
   title: 'TakeLeave.sg',
   description: 'Personal PTO tracker and forecast for Singapore workers',
+  metadataBase: new URL('https://take-leave-sg.vercel.app/'),
+  openGraph: {
+    title: 'TakeLeave.sg',
+    description: 'Personal PTO tracker and forecast for Singapore workers',
+    type: 'website',
+    siteName: 'TakeLeave.sg',
+    url: '/',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'TakeLeave.sg',
+    description: 'Personal PTO tracker and forecast for Singapore workers',
+  },
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#09090b' },
+  ],
 }
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => (
