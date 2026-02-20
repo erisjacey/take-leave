@@ -5,6 +5,7 @@ import type { LeaveEntry, PtoConfig } from '@/lib'
 import { MONTHS } from '@/lib'
 import { FlaskConical } from 'lucide-react'
 import { useState } from 'react'
+import NumberStepper from './number-stepper'
 
 interface WhatIfProps {
   config: PtoConfig
@@ -44,16 +45,12 @@ const WhatIf = ({ config, entries }: WhatIfProps) => {
           >
             Days off
           </label>
-          <input
+          <NumberStepper
             id="whatif-days"
-            type="number"
+            value={days}
+            onChange={setDays}
             min={0.5}
             step={0.5}
-            value={days}
-            onChange={(e) => {
-              setDays(Math.max(0.5, parseFloat(e.target.value) || 0.5))
-            }}
-            className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 font-mono text-sm text-zinc-900 outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
           />
         </div>
         <div>

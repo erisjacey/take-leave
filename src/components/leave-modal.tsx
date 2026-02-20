@@ -5,6 +5,7 @@ import { TAG_CONFIG } from '@/lib'
 import { X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import DateRangePicker from './date-range-picker'
+import NumberStepper from './number-stepper'
 
 interface LeaveModalProps {
   entry?: LeaveEntry
@@ -225,16 +226,13 @@ const LeaveModal = ({ entry, onSave, onDelete, onClose }: LeaveModalProps) => {
               <label className="mb-1 block text-xs font-medium text-zinc-700 dark:text-zinc-300">
                 Days
               </label>
-              <input
-                type="number"
-                required
+              <NumberStepper
+                value={form.days}
+                onChange={(v) => {
+                  update({ days: v })
+                }}
                 min={0.5}
                 step={0.5}
-                value={form.days}
-                onChange={(e) => {
-                  update({ days: parseFloat(e.target.value) })
-                }}
-                className="w-28 rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-blue-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
               />
               <p className="mt-1 text-xs text-zinc-400">
                 Auto-calculated weekdays. Adjust for half-days.
