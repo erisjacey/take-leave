@@ -102,12 +102,16 @@ const Section = ({ title, entries, onEdit }: SectionProps) => (
 const LeaveList = ({ entries, onAdd, onEdit }: LeaveListProps) => {
   const today = new Date().toISOString().slice(0, 10)
 
+  const ongoing = entries
+    .filter((e) => e.startDate <= today && e.endDate >= today)
+    .sort((a, b) => a.startDate.localeCompare(b.startDate))
+
   const upcoming = entries
-    .filter((e) => e.startDate >= today)
+    .filter((e) => e.startDate > today)
     .sort((a, b) => a.startDate.localeCompare(b.startDate))
 
   const past = entries
-    .filter((e) => e.startDate < today)
+    .filter((e) => e.endDate < today)
     .sort((a, b) => b.startDate.localeCompare(a.startDate))
 
   return (
@@ -131,6 +135,9 @@ const LeaveList = ({ entries, onAdd, onEdit }: LeaveListProps) => {
           <EmptyState onAdd={onAdd} />
         ) : (
           <div className="flex flex-col gap-6">
+            {ongoing.length > 0 && (
+              <Section title="Ongoing" entries={ongoing} onEdit={onEdit} />
+            )}
             {upcoming.length > 0 && (
               <Section title="Upcoming" entries={upcoming} onEdit={onEdit} />
             )}
