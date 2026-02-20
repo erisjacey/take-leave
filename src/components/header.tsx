@@ -1,6 +1,6 @@
 'use client'
 
-import { Calendar, Settings } from 'lucide-react'
+import { Calendar, CodeXml, Settings } from 'lucide-react'
 import ThemeToggle from './theme-toggle'
 
 interface HeaderProps {
@@ -17,6 +17,15 @@ const Header = ({ onOpenConfig }: HeaderProps) => (
 
       <div className="flex items-center gap-1">
         <ThemeToggle />
+        <a
+          href="https://github.com/erisjacey/take-leave"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="View source on GitHub"
+          className="flex h-9 w-9 items-center justify-center rounded-md text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"
+        >
+          <CodeXml size={16} />
+        </a>
         <button
           type="button"
           onClick={onOpenConfig}
