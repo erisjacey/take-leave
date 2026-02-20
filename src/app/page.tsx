@@ -121,6 +121,7 @@ const Home = () => {
       {isLeaveModalOpen && (
         <LeaveModal
           entry={editingEntry}
+          hasSickLeave={pto.config.leaveTypes.some((lt) => lt.type === 'sick')}
           onSave={handleLeaveSave}
           onDelete={editingEntry !== undefined ? handleLeaveDelete : undefined}
           onClose={handleLeaveClose}

@@ -9,6 +9,7 @@ import NumberStepper from './number-stepper'
 
 interface LeaveModalProps {
   entry?: LeaveEntry
+  hasSickLeave: boolean
   onSave: (data: Omit<LeaveEntry, 'id'>) => void
   onDelete?: () => void
   onClose: () => void
@@ -24,7 +25,7 @@ interface FormData {
   notes: string
 }
 
-const LEAVE_TYPES: { value: LeaveType; label: string }[] = [
+const ALL_leaveTypes: { value: LeaveType; label: string }[] = [
   { value: 'annual', label: 'Annual' },
   { value: 'sick', label: 'Sick' },
 ]
@@ -48,9 +49,18 @@ const countWeekdays = (start: string, end: string): number => {
   return count
 }
 
-const LeaveModal = ({ entry, onSave, onDelete, onClose }: LeaveModalProps) => {
+const LeaveModal = ({
+  entry,
+  hasSickLeave,
+  onSave,
+  onDelete,
+  onClose,
+}: LeaveModalProps) => {
   const isEdit = entry !== undefined
   const today = new Date().toISOString().slice(0, 10)
+  const leaveTypes = hasSickLeave
+    ? ALL_leaveTypes
+    : ALL_leaveTypes.filter((t) => t.value !== 'sick')
 
   const [form, setForm] = useState<FormData>({
     title: entry?.title ?? '',
@@ -162,7 +172,7 @@ const LeaveModal = ({ entry, onSave, onDelete, onClose }: LeaveModalProps) => {
                 Leave Type
               </label>
               <div className="flex gap-2">
-                {LEAVE_TYPES.map(({ value, label }) => (
+                {leaveTypes.map(({ value, label }) => (
                   <button
                     key={value}
                     type="button"

@@ -59,7 +59,7 @@ const formToConfig = (form: FormState): PtoConfig => {
       totalDays: form.sickDays,
       accrualMode: 'lump_sum',
       monthlyAccrual: 0,
-      startingBalance: form.sickDays,
+      startingBalance: 0,
     })
   }
 
