@@ -5,6 +5,7 @@ import type {
   LeaveTypeConfig,
   PtoConfig,
   TimelineEvent,
+  WhatIfScenario,
 } from './types'
 import { MONTHS } from './constants'
 
@@ -161,35 +162,67 @@ const timelineToChartData = (
   })
 }
 
-export const buildAnnualLeaveChartData = (
+/** Build the base annual timeline events (accrual + extras + leave). */
+const buildAnnualTimelineEvents = (
   config: PtoConfig,
   entries: LeaveEntry[],
-): ChartDataPoint[] => {
+): { events: TimelineEvent[]; startingBalance: number } | null => {
   const annualConfig = config.leaveTypes.find((lt) => lt.type === 'annual')
   if (!annualConfig) {
-    return []
+    return null
   }
 
-  // Only include leave entries from the config year to avoid double-counting
-  // days already baked into startingBalance from prior years.
   const yearPrefix = `${config.year.toString()}-`
   const yearEntries = entries.filter((e) => e.startDate.startsWith(yearPrefix))
 
-  const allEvents = mergeAndSortEvents([
+  const events = mergeAndSortEvents([
     ...generateAccrualEvents(annualConfig, config.year),
     ...generateExtraEvents(config.annualExtras, config.year),
     ...generateLeaveEvents(yearEntries, 'annual'),
   ])
-  const timeline = computeRunningBalance(
-    allEvents,
-    annualConfig.startingBalance,
-  )
 
-  return timelineToChartData(
-    timeline,
-    config.year,
-    annualConfig.startingBalance,
-  )
+  return { events, startingBalance: annualConfig.startingBalance }
+}
+
+export const buildAnnualLeaveChartData = (
+  config: PtoConfig,
+  entries: LeaveEntry[],
+): ChartDataPoint[] => {
+  const base = buildAnnualTimelineEvents(config, entries)
+  if (!base) {
+    return []
+  }
+
+  const timeline = computeRunningBalance(base.events, base.startingBalance)
+  return timelineToChartData(timeline, config.year, base.startingBalance)
+}
+
+/** Build a single consolidated what-if chart line with all scenarios as synthetic leave. */
+export const buildWhatIfChartData = (
+  config: PtoConfig,
+  entries: LeaveEntry[],
+  scenarios: WhatIfScenario[],
+): ChartDataPoint[] | null => {
+  if (scenarios.length === 0) {
+    return null
+  }
+
+  const base = buildAnnualTimelineEvents(config, entries)
+  if (!base) {
+    return null
+  }
+
+  const scenarioEvents: TimelineEvent[] = scenarios.map((s) => ({
+    date: s.startDate,
+    type: 'leave' as const,
+    days: -s.days,
+    label: s.name,
+    balanceAfter: 0,
+  }))
+
+  const allEvents = mergeAndSortEvents([...base.events, ...scenarioEvents])
+  const timeline = computeRunningBalance(allEvents, base.startingBalance)
+  return timelineToChartData(timeline, config.year, base.startingBalance)
 }
 
 /** Sick leave chart data — same shape as annual but no extras, lump_sum only */
