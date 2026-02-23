@@ -11,7 +11,8 @@ import {
   WhatIf,
 } from '@/components'
 import { usePtoData } from '@/hooks'
-import type { LeaveEntry, PtoConfig } from '@/lib'
+import type { LeaveModalDefaults } from '@/components/leave-modal'
+import type { LeaveEntry, PtoConfig, WhatIfScenario } from '@/lib'
 import { storageService } from '@/lib'
 import { useState } from 'react'
 
@@ -20,6 +21,9 @@ const Home = () => {
   const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false)
   const [isConfigModalOpen, setIsConfigModalOpen] = useState(false)
   const [editingEntry, setEditingEntry] = useState<LeaveEntry | undefined>()
+  const [leaveModalDefaults, setLeaveModalDefaults] = useState<
+    LeaveModalDefaults | undefined
+  >()
 
   if (pto.isLoading) {
     return (
@@ -64,6 +68,12 @@ const Home = () => {
       pto.deleteEntry(editingEntry.id)
     }
     handleLeaveClose()
+  }
+
+  // ─── What-if scenario handlers ─────────────────────────────────────────────
+
+  const handleConvertToLeave = (_scenario: WhatIfScenario) => {
+    // Wired in Step 4 — pre-populate leave modal from scenario
   }
 
   // ─── Config modal handlers ─────────────────────────────────────────────────
@@ -114,7 +124,15 @@ const Home = () => {
             onEdit={handleLeaveEdit}
           />
           <div className="lg:sticky lg:top-[4.5rem] lg:self-start">
-            <WhatIf config={pto.config} entries={pto.entries} />
+            <WhatIf
+              config={pto.config}
+              entries={pto.entries}
+              scenarios={pto.scenarios}
+              onAddScenario={pto.addScenario}
+              onUpdateScenario={pto.updateScenario}
+              onDeleteScenario={pto.deleteScenario}
+              onConvertToLeave={handleConvertToLeave}
+            />
           </div>
         </div>
       </main>
