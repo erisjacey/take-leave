@@ -13,6 +13,7 @@ import type {
   PtoConfig,
   PtoStats,
   StoredData,
+  WhatIfScenario,
 } from '@/lib'
 import { nanoid } from 'nanoid'
 import { useEffect, useState } from 'react'
@@ -20,6 +21,7 @@ import { useEffect, useState } from 'react'
 interface PtoData {
   config: PtoConfig
   entries: LeaveEntry[]
+  scenarios: WhatIfScenario[]
   stats: PtoStats
   annualLeaveChartData: ChartDataPoint[]
   sickLeaveChartData: ChartDataPoint[] | null
@@ -28,6 +30,9 @@ interface PtoData {
   addEntry: (data: Omit<LeaveEntry, 'id'>) => void
   updateEntry: (entry: LeaveEntry) => void
   deleteEntry: (id: string) => void
+  addScenario: (data: Omit<WhatIfScenario, 'id'>) => void
+  updateScenario: (scenario: WhatIfScenario) => void
+  deleteScenario: (id: string) => void
   updateConfig: (config: PtoConfig) => void
   completeOnboarding: (config: PtoConfig) => void
 }
@@ -36,6 +41,7 @@ const usePtoData = (): PtoData => {
   const [data, setData] = useState<StoredData>({
     config: DEFAULT_CONFIG,
     entries: [],
+    scenarios: [],
   })
   const [isLoading, setIsLoading] = useState(true)
   const [hasOnboarded, setHasOnboarded] = useState(false)
@@ -74,8 +80,29 @@ const usePtoData = (): PtoData => {
     persist({ ...data, config })
   }
 
+  const addScenario = (scenarioData: Omit<WhatIfScenario, 'id'>) => {
+    const scenario: WhatIfScenario = { ...scenarioData, id: nanoid() }
+    persist({ ...data, scenarios: [...data.scenarios, scenario] })
+  }
+
+  const updateScenario = (scenario: WhatIfScenario) => {
+    persist({
+      ...data,
+      scenarios: data.scenarios.map((s) =>
+        s.id === scenario.id ? scenario : s,
+      ),
+    })
+  }
+
+  const deleteScenario = (id: string) => {
+    persist({
+      ...data,
+      scenarios: data.scenarios.filter((s) => s.id !== id),
+    })
+  }
+
   const completeOnboarding = (config: PtoConfig) => {
-    persist({ config, entries: [] })
+    persist({ config, entries: [], scenarios: [] })
     setHasOnboarded(true)
   }
 
@@ -89,6 +116,7 @@ const usePtoData = (): PtoData => {
   return {
     config: data.config,
     entries: data.entries,
+    scenarios: data.scenarios,
     stats,
     annualLeaveChartData,
     sickLeaveChartData,
@@ -97,6 +125,9 @@ const usePtoData = (): PtoData => {
     addEntry,
     updateEntry,
     deleteEntry,
+    addScenario,
+    updateScenario,
+    deleteScenario,
     updateConfig,
     completeOnboarding,
   }

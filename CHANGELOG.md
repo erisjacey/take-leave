@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Chart x-axis labels hidden on small screens for better mobile readability
 - Removed gaming tag
 
-## [1.0.0] - 2026-02-20
+## [1.0.0] - 2026-02-19
 
 ### Added
 

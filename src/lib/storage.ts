@@ -23,7 +23,12 @@ const getData = (): StoredData | null => {
     if (!raw) {
       return null
     }
-    return JSON.parse(raw) as StoredData
+    const data = JSON.parse(raw) as StoredData
+    // Backward compat: scenarios added in v1.2
+    if (!Array.isArray(data.scenarios)) {
+      data.scenarios = []
+    }
+    return data
   } catch {
     return null
   }
@@ -53,6 +58,10 @@ const importJson = (json: string): StoredData => {
     throw new Error('Invalid backup: missing config or entries')
   }
   const data = parsed as StoredData
+  // Backward compat: scenarios may be absent in older backups
+  if (!Array.isArray(data.scenarios)) {
+    data.scenarios = []
+  }
   saveData(data)
   return data
 }

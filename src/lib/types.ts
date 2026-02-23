@@ -72,9 +72,23 @@ export interface TimelineEvent {
   balanceAfter: number
 }
 
+// ─── What-If Scenarios ───────────────────────────────────────────────────────
+
+export interface WhatIfScenario {
+  id: string
+  name: string
+  /** YYYY-MM-DD */
+  startDate: string
+  /** YYYY-MM-DD */
+  endDate: string
+  /** Supports half-days (0.5) */
+  days: number
+}
+
 // ─── Storage ──────────────────────────────────────────────────────────────────
 
 export interface StoredData {
   config: PtoConfig
   entries: LeaveEntry[]
+  scenarios: WhatIfScenario[]
 }
