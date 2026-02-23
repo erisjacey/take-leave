@@ -11,8 +11,12 @@ import {
   WhatIf,
 } from '@/components'
 import { usePtoData } from '@/hooks'
-import type { LeaveModalDefaults } from '@/components/leave-modal'
-import type { LeaveEntry, PtoConfig, WhatIfScenario } from '@/lib'
+import type {
+  LeaveEntry,
+  LeaveModalDefaults,
+  PtoConfig,
+  WhatIfScenario,
+} from '@/lib'
 import { storageService } from '@/lib'
 import { useState } from 'react'
 
@@ -52,6 +56,7 @@ const Home = () => {
   const handleLeaveClose = () => {
     setIsLeaveModalOpen(false)
     setEditingEntry(undefined)
+    setLeaveModalDefaults(undefined)
   }
 
   const handleLeaveSave = (data: Omit<LeaveEntry, 'id'>) => {
@@ -72,8 +77,15 @@ const Home = () => {
 
   // ─── What-if scenario handlers ─────────────────────────────────────────────
 
-  const handleConvertToLeave = (_scenario: WhatIfScenario) => {
-    // Wired in Step 4 — pre-populate leave modal from scenario
+  const handleConvertToLeave = (scenario: WhatIfScenario) => {
+    setLeaveModalDefaults({
+      title: scenario.name,
+      startDate: scenario.startDate,
+      endDate: scenario.endDate,
+      days: scenario.days,
+    })
+    setEditingEntry(undefined)
+    setIsLeaveModalOpen(true)
   }
 
   // ─── Config modal handlers ─────────────────────────────────────────────────
@@ -139,6 +151,7 @@ const Home = () => {
       {isLeaveModalOpen && (
         <LeaveModal
           entry={editingEntry}
+          defaults={leaveModalDefaults}
           hasSickLeave={pto.config.leaveTypes.some((lt) => lt.type === 'sick')}
           onSave={handleLeaveSave}
           onDelete={editingEntry !== undefined ? handleLeaveDelete : undefined}

@@ -2,13 +2,7 @@
 
 import type { LeaveEntry, PtoConfig, WhatIfScenario } from '@/lib'
 import { formatDate } from '@/lib'
-import {
-  CalendarPlus,
-  FlaskConical,
-  Pencil,
-  Plus,
-  Trash2,
-} from 'lucide-react'
+import { CalendarPlus, FlaskConical, Pencil, Plus, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import DateRangePicker from './date-range-picker'
 import NumberStepper from './number-stepper'

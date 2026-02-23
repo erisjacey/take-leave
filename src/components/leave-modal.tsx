@@ -1,6 +1,6 @@
 'use client'
 
-import type { LeaveEntry, LeaveTag, LeaveType } from '@/lib'
+import type { LeaveEntry, LeaveModalDefaults, LeaveTag, LeaveType } from '@/lib'
 import { TAG_CONFIG } from '@/lib'
 import { X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
@@ -9,6 +9,7 @@ import NumberStepper from './number-stepper'
 
 interface LeaveModalProps {
   entry?: LeaveEntry
+  defaults?: LeaveModalDefaults
   hasSickLeave: boolean
   onSave: (data: Omit<LeaveEntry, 'id'>) => void
   onDelete?: () => void
@@ -51,6 +52,7 @@ const countWeekdays = (start: string, end: string): number => {
 
 const LeaveModal = ({
   entry,
+  defaults,
   hasSickLeave,
   onSave,
   onDelete,
@@ -62,13 +64,19 @@ const LeaveModal = ({
     ? ALL_leaveTypes
     : ALL_leaveTypes.filter((t) => t.value !== 'sick')
 
+  const initStart = entry?.startDate ?? defaults?.startDate ?? today
+  const initEnd = entry?.endDate ?? defaults?.endDate ?? today
+
   const [form, setForm] = useState<FormData>({
-    title: entry?.title ?? '',
+    title: entry?.title ?? defaults?.title ?? '',
     leaveType: entry?.leaveType ?? 'annual',
     tag: entry?.tag ?? 'personal',
-    startDate: entry?.startDate ?? today,
-    endDate: entry?.endDate ?? today,
-    days: entry?.days ?? Math.max(1, countWeekdays(today, today)),
+    startDate: initStart,
+    endDate: initEnd,
+    days:
+      entry?.days ??
+      defaults?.days ??
+      Math.max(1, countWeekdays(initStart, initEnd)),
     notes: entry?.notes ?? '',
   })
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false)

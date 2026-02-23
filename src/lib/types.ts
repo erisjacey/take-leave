@@ -85,6 +85,17 @@ export interface WhatIfScenario {
   days: number
 }
 
+// ─── Leave Modal Defaults ────────────────────────────────────────────────────
+
+export interface LeaveModalDefaults {
+  title?: string
+  /** YYYY-MM-DD */
+  startDate?: string
+  /** YYYY-MM-DD */
+  endDate?: string
+  days?: number
+}
+
 // ─── Storage ──────────────────────────────────────────────────────────────────
 
 export interface StoredData {
