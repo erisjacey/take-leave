@@ -263,7 +263,7 @@ const WhatIf = ({
   // Empty state
   if (isEmpty && !isFormOpen) {
     return (
-      <div className="overflow-hidden rounded-xl border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-950">
+      <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-950">
         <div className="flex flex-col items-center gap-3 py-8 text-center">
           <FlaskConical
             size={36}
@@ -290,7 +290,7 @@ const WhatIf = ({
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-950">
+    <div className="rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-950">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
         <div className="flex items-center gap-2">
