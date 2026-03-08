@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-03-08
+
+### Added
+
+- What-if scenario management: save, name, edit, and delete scenarios with date ranges
+- Consolidated what-if forecast line on chart (green dashed line showing projected balance with all scenarios applied)
+- Quick-add scenario to leave list via pre-populated leave modal
+
+### Fixed
+
+- Aligned what-if header styling with leave list for visual consistency
+
+### Removed
+
+- Legacy single-computation what-if hook (replaced by scenario-based engine and UI)
+
 ## [1.1.0] - 2026-02-20
 
 ### Added
