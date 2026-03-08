@@ -17,7 +17,7 @@ import type {
   PtoConfig,
   WhatIfScenario,
 } from '@/lib'
-import { storageService } from '@/lib'
+import { buildWhatIfChartData, storageService } from '@/lib'
 import { useState } from 'react'
 
 const Home = () => {
@@ -128,6 +128,11 @@ const Home = () => {
         <ForecastChart
           annualLeaveChartData={pto.annualLeaveChartData}
           sickLeaveChartData={pto.sickLeaveChartData}
+          whatIfChartData={buildWhatIfChartData(
+            pto.config,
+            pto.entries,
+            pto.scenarios,
+          )}
         />
         <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
           <LeaveList

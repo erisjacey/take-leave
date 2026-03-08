@@ -18,6 +18,7 @@
   --chart-tooltip-border: #e4e4e7;
   --chart-danger: #ef4444;
   --chart-sick-line: #f59e0b;
+  --chart-whatif-line: #16a34a;
 }
 
 .dark {
@@ -29,6 +30,7 @@
   --chart-tooltip-border: #3f3f46;
   --chart-danger: #ef4444;
   --chart-sick-line: #fbbf24;
+  --chart-whatif-line: #4ade80;
 }
 
 /* ─── Day picker overrides ─────────────────────────────────────────────── */

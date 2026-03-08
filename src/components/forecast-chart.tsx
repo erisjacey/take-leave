@@ -1,7 +1,7 @@
 'use client'
 
 import type { ChartDataPoint } from '@/lib'
-import { Stethoscope } from 'lucide-react'
+import { FlaskConical, Stethoscope } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import {
   Area,
@@ -18,6 +18,7 @@ import {
 interface ForecastChartProps {
   annualLeaveChartData: ChartDataPoint[]
   sickLeaveChartData: ChartDataPoint[] | null
+  whatIfChartData: ChartDataPoint[] | null
 }
 
 interface CombinedPoint {
@@ -25,6 +26,7 @@ interface CombinedPoint {
   past: number | null
   future: number | null
   sick: number | null
+  whatIf: number | null
 }
 
 interface TooltipPayloadEntry {
@@ -37,6 +39,7 @@ interface CustomTooltipProps {
   label?: string
   payload?: TooltipPayloadEntry[]
   showSick: boolean
+  showWhatIf: boolean
 }
 
 const ChartTooltip = ({
@@ -44,6 +47,7 @@ const ChartTooltip = ({
   label,
   payload,
   showSick,
+  showWhatIf,
 }: CustomTooltipProps) => {
   if (!active || !payload || payload.length === 0) {
     return null
@@ -52,6 +56,7 @@ const ChartTooltip = ({
   const pastEntry = payload.find((p) => p.dataKey === 'past')
   const futureEntry = payload.find((p) => p.dataKey === 'future')
   const sickEntry = payload.find((p) => p.dataKey === 'sick')
+  const whatIfEntry = payload.find((p) => p.dataKey === 'whatIf')
   const annualValue = pastEntry?.value ?? futureEntry?.value
 
   if (annualValue === null || annualValue === undefined) {
@@ -71,6 +76,13 @@ const ChartTooltip = ({
             Sick: {sickEntry.value.toFixed(1)} days
           </p>
         )}
+      {showWhatIf &&
+        whatIfEntry?.value !== null &&
+        whatIfEntry?.value !== undefined && (
+          <p className="text-[var(--chart-whatif-line)]">
+            What-If: {whatIfEntry.value.toFixed(1)} days
+          </p>
+        )}
     </div>
   )
 }
@@ -78,9 +90,11 @@ const ChartTooltip = ({
 const ForecastChart = ({
   annualLeaveChartData,
   sickLeaveChartData,
+  whatIfChartData,
 }: ForecastChartProps) => {
   const [mounted, setMounted] = useState(false)
   const [showSick, setShowSick] = useState(true)
+  const [showWhatIf, setShowWhatIf] = useState(true)
   const [isWide, setIsWide] = useState(false)
 
   useEffect(() => {
@@ -103,6 +117,7 @@ const ForecastChart = ({
   }
 
   const hasSickData = sickLeaveChartData !== null
+  const hasWhatIfData = whatIfChartData !== null
 
   // Split data into past and future series
   // Past includes past months + first future month (bridge point for smooth connection)
@@ -122,6 +137,10 @@ const ForecastChart = ({
     future: futureData[i],
     sick:
       hasSickData && showSick ? (sickLeaveChartData[i]?.balance ?? null) : null,
+    whatIf:
+      hasWhatIfData && showWhatIf
+        ? (whatIfChartData[i]?.balance ?? null)
+        : null,
   }))
 
   return (
@@ -130,23 +149,46 @@ const ForecastChart = ({
         <h2 className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
           Leave Forecast
         </h2>
-        {hasSickData && (
-          <button
-            type="button"
-            onClick={() => {
-              setShowSick((prev) => !prev)
-            }}
-            className={`flex items-center gap-1.5 rounded-md px-2 py-1 text-xs transition-colors ${
-              showSick
-                ? 'bg-amber-50 text-amber-600 dark:bg-amber-950 dark:text-amber-400'
-                : 'text-zinc-400 hover:text-zinc-600 dark:text-zinc-500 dark:hover:text-zinc-300'
-            }`}
-            title={showSick ? 'Hide sick leave' : 'Show sick leave'}
-          >
-            <Stethoscope size={14} />
-            <span>Sick</span>
-          </button>
-        )}
+        <div className="flex gap-1">
+          {hasWhatIfData && (
+            <button
+              type="button"
+              onClick={() => {
+                setShowWhatIf((prev) => !prev)
+              }}
+              className={`flex items-center gap-1.5 rounded-md px-2 py-1 text-xs transition-colors ${
+                showWhatIf
+                  ? 'bg-green-50 text-green-600 dark:bg-green-950 dark:text-green-400'
+                  : 'text-zinc-400 hover:text-zinc-600 dark:text-zinc-500 dark:hover:text-zinc-300'
+              }`}
+              title={
+                showWhatIf
+                  ? 'Hide what-if projection'
+                  : 'Show what-if projection'
+              }
+            >
+              <FlaskConical size={14} />
+              <span>What-If</span>
+            </button>
+          )}
+          {hasSickData && (
+            <button
+              type="button"
+              onClick={() => {
+                setShowSick((prev) => !prev)
+              }}
+              className={`flex items-center gap-1.5 rounded-md px-2 py-1 text-xs transition-colors ${
+                showSick
+                  ? 'bg-amber-50 text-amber-600 dark:bg-amber-950 dark:text-amber-400'
+                  : 'text-zinc-400 hover:text-zinc-600 dark:text-zinc-500 dark:hover:text-zinc-300'
+              }`}
+              title={showSick ? 'Hide sick leave' : 'Show sick leave'}
+            >
+              <Stethoscope size={14} />
+              <span>Sick</span>
+            </button>
+          )}
+        </div>
       </div>
       <ResponsiveContainer width="100%" height={220}>
         <AreaChart
@@ -210,7 +252,12 @@ const ForecastChart = ({
             width={36}
           />
           <Tooltip
-            content={<ChartTooltip showSick={hasSickData && showSick} />}
+            content={
+              <ChartTooltip
+                showSick={hasSickData && showSick}
+                showWhatIf={hasWhatIfData && showWhatIf}
+              />
+            }
           />
           <ReferenceLine
             y={0}
@@ -246,6 +293,18 @@ const ForecastChart = ({
               stroke="var(--chart-sick-line)"
               strokeWidth={1.5}
               strokeDasharray="4 2"
+              dot={false}
+              activeDot={{ r: 3, strokeWidth: 0 }}
+              connectNulls
+            />
+          )}
+          {hasWhatIfData && showWhatIf && (
+            <Line
+              type="monotone"
+              dataKey="whatIf"
+              stroke="var(--chart-whatif-line)"
+              strokeWidth={1.5}
+              strokeDasharray="6 3"
               dot={false}
               activeDot={{ r: 3, strokeWidth: 0 }}
               connectNulls
